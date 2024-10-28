@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("\n\tParallel Arrays\n");
+using System.Runtime.CompilerServices;
+
+Console.WriteLine("\n\tParallel Arrays using methods\n");
 
 const int PYHSICALSIZE = 25;
 int logicalSize = 0;
@@ -24,8 +26,10 @@ try
 {
     do
     {
-        Console.Write("Enter the student name:\t");
-        inputValue = Console.ReadLine();
+        //this method passes no paramaters but receives a valid from the method as the method completes
+        inputValue = getStudentName();
+        //Console.Write("Enter the student name:\t");
+        //inputValue = Console.ReadLine();
         if (!string.IsNullOrWhiteSpace(inputValue))
         {
             anotherStudent = true;
@@ -37,7 +41,7 @@ try
             inputValue = Console.ReadLine();
             marks[logicalSize] = int.Parse(inputValue);
             logicalSize++; //don't forget to increment
-            DisplayClass(names, marks, logicalSize);
+            //DisplayClass(names, marks, logicalSize);
         }
         else
         {
@@ -50,15 +54,31 @@ catch (Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
+//how to sort the arrays and keep the relationship between the 2 arrays
+Array.Sort(names, marks, 0, logicalSize);
+
+
 //call the method that will display my data
 //this method returns nothing
 //syntax  [variable = ] methodname([list of arguments]);
+//syntax of the argument list
+// value [, value [, .....]]
+//rules for your argument list
+//value is any valid C# value
+//the order of values must match the expected order defined by the method
+//the value must be of the expect datatype of the parameter defined by the method
 DisplayClass(names, marks, logicalSize);
+calculateAverage(logicalSize, marks);
 
 //task of the method: display of the contents of an array collection
 //syntax of the method 
 //  access modifier returndatatype methodname([parameter list])
 //  {  ... coding block ... }
+//syntax of the parameter list
+//datatype localvariablename [, datatype localvariablename [, ....]]
+//
+//all locally declared variables within the method exist ONLY as long as the method is executing
+//
 //if the method does not return any value then the returndatatype is: void
 //if the method does not return any value then there is NO return statement
 //if the method does return a single value then the returndatatype is of the value
@@ -66,28 +86,52 @@ DisplayClass(names, marks, logicalSize);
 
 //FOR THIS COURSE AS A CLASS STANDARD ALL METHOD WILL BE STATIC !!!!!!!
 
+//created a method called DisplayClass(string[] myStrings, int[] numbers, int arraySize)
+//this declares your contract for the method
+//method header is the fully qualified method definition
+//method signature is the methodname and list of parameters
 static void DisplayClass(string[] myStrings, int[] numbers, int arraySize)
 { 
+    //any variable that is required for this code must be declared within the method
+    //any variable that is declared within the method exists only as long as the method executes
+    //consider any parameter variable as a locally declared variable
     Console.WriteLine("\nClass list with marks\n");
     for (int index = 0; index < arraySize; index++)
     {
         Console.WriteLine($"Student: {myStrings[index]} has a mark of {numbers[index]}");
     }
+
+    //this method returns nothing therefore there is no return statement
 }
 
-//calculate the class mean average
-int sumOfMarks = 0;
-double meanAverage = 0.0;
-int classIndex = 0;
-while (classIndex < logicalSize)
+static void calculateAverage(int logicalSize, int[] marks)
 {
-    sumOfMarks += marks[classIndex];
-    classIndex++; //classIndex += 1;
+    //calculate the class mean average
+    //the logicalSize is a local variable and is DIFFERENT then the logicalsize in the driver
+    //the mark is a local variable and is DIFFERENT than the marks in the driver
+    int sumOfMarks = 0;
+    double meanAverage = 0.0;
+    int classIndex = 0;
+    while (classIndex < logicalSize)
+    {
+        sumOfMarks += marks[classIndex];
+        classIndex++; //classIndex += 1;
+    }
+    meanAverage = (double)sumOfMarks / (double)logicalSize;
+    Console.WriteLine($"The mean average for our {logicalSize} students is " +
+        $" {meanAverage.ToString("##0.0")}");
 }
-meanAverage = (double)sumOfMarks / (double)logicalSize;
-Console.WriteLine($"The mean average for our {logicalSize} students is " +
-    $" {meanAverage.ToString("##0.0")}");
 
+static string getStudentName()
+{
+    Console.Write("Enter the student name:\t");
+    string inputValue = Console.ReadLine();
+
+    //since the return datatype is not void but an actual datatype, this method is required to have a return statement
+    //syntax of the return statement :
+    //return valid C# value of the expected datatype
+    return inputValue;
+}
 //find the student with the hightest mark
 int highestMark = marks[0]; //assume the first mark is the highest
 string topStudent = names[0];
